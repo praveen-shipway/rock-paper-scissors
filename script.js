@@ -5,43 +5,65 @@ function getComputerChoice() {
 
 function playRound(playerSelection, computerSelection) {
 
-	if (playerSelection.toLowerCase() === computerSelection.toLowerCase() ) {
+	if (playerSelection === computerSelection ) {
 		return "Ties";
 	}
 
-	if (playerSelection.toLowerCase() === 'rock' && computerSelection.toLowerCase() === 'paper' ) {
+	if (playerSelection === 'rock' && computerSelection === 'paper' ) {
 		return "You Lose! Paper beats Rock";
 	}
 
-	if (playerSelection.toLowerCase() === 'paper' && computerSelection.toLowerCase() === 'scissors' ) {
+	if (playerSelection === 'paper' && computerSelection === 'scissors' ) {
 		return "You Lose! scissors beats Paper";
 	}
 
-	if (playerSelection.toLowerCase() === 'scissors' && computerSelection.toLowerCase() === 'rock' ) {
+	if (playerSelection === 'scissors' && computerSelection === 'rock' ) {
 		return "You Lose! Rock beats Scissors";
 	}
 
 	return "You Win!";
 }
 
-function game() {
-	let score = 0;
+const btns = document.querySelectorAll('button');
+const winner = document.getElementById('winner');
+const divComputerScore = document.getElementById('computerScore');
+const divPlayerScore = document.getElementById('playerScore');
 
-	for (let i = 0; i < 5; i++) {
-		let playerSelection = prompt("Enter 'Rock', 'Paper', 'Scissors'", "");
-		let computerSelection = getComputerChoice();
+btns.forEach(btn => btn.addEventListener('click', function (event) {
+	if (winner.textContent !== '') {
+		winner.textContent = '';
+		divComputerScore.textContent = 0;
+		divPlayerScore.textContent = 0;
+	}
+	const playerSelection = event.target.textContent.toLowerCase();
+	const divPlayerSelection = document.getElementById('playerSelection');
+	divPlayerSelection.textContent = playerSelection;
 
-		let result = playRound(playerSelection, computerSelection);
-		console.log(result);
-		
-		if (result.includes('Ties')) {
-			i--;
-		} else if (!result.includes('Lose')) {
-			score++;
+	const computerSelection = getComputerChoice();
+	const divComputerSelection = document.getElementById('computerSelection');
+	divComputerSelection.textContent = computerSelection;
+
+	const result = playRound(playerSelection, computerSelection);
+	const divResult = document.getElementById('result');
+	divResult.textContent = result;
+
+
+	let currentComputerScore = parseInt(divComputerScore.textContent);
+
+	let currentPlayerScore = parseInt(divPlayerScore.textContent);
+
+	if (result.includes('Lose')) {
+		++currentComputerScore;
+		divComputerScore.textContent = currentComputerScore;
+	} else if (result.includes('Win')) {
+		++currentPlayerScore;
+		divPlayerScore.textContent = currentPlayerScore;
+	}
+	if (currentComputerScore === 5 || currentPlayerScore === 5) {
+		if (currentComputerScore === 5) {
+			winner.textContent = 'Computer';
+		} else {
+			winner.textContent = 'Player';
 		}
 	}
-	return score;
-}
-
-let finalScore = game();
-console.log("Final score is " + finalScore);
+}));
